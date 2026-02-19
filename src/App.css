@@ -629,10 +629,11 @@ img {
 
 .contact-section{
   color: #ffffff;
-    padding: 4rem 2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  padding: 4rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 0 4rem 0;
 }
 
 .contact-wrapper {
@@ -656,12 +657,14 @@ img {
   font-weight: 500;
   color: #fca311;
 }
+
 .contact-content p {
   font-size: 20px;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.92);
   margin-bottom: 2rem;
 }
+
 .contact-divider {
   border: none;
   height: 1px;
@@ -1069,6 +1072,31 @@ img {
   .projects-carousel{
     gap:10px;
   }
-
-
+  .contact-container{
+    flex-direction: column;
+  }
+  .contact-links{
+    flex-direction: row;
+  }
+  .contact-content h2 {
+    font-size: 24px;
+  }
+  .contact-content p {
+    font-size: 14px;
+  }
+  .contact-content a {
+    font-size: 14px;
+  }
+  .contact-form{
+    width: 100%;
+  }
+  .contact-form input, .contact-form textarea{
+    font-size: 14px;
+  }
+  .contact-btn{
+    font-size: 16px;
+  }
+  .contact-wrapper{
+    gap: 25px;
+  }
 }

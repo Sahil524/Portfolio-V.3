@@ -68,6 +68,8 @@ export default function Terminal() {
 
     const mediaSessionRef = useRef(null);
 
+    const mobileInputRef = useRef(null);
+
 
     useEffect(() => {
         errorSound.current = new Audio("./assets/audio/error.mp3");
@@ -301,9 +303,6 @@ export default function Terminal() {
         const handler = (e) => {
             unlockAudio();
 
-            if (e.code === "Space") {
-                e.preventDefault();
-            }
             if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End"].includes(e.key)) {
                 e.preventDefault();
             }
@@ -313,7 +312,6 @@ export default function Terminal() {
                 if (gameActive) setGameActive(false);
                 return;
             }
-
 
             if (e.ctrlKey && e.key.toLowerCase() === "v") {
                 e.preventDefault();
@@ -325,6 +323,9 @@ export default function Terminal() {
 
                     setInputBuffer(updated);
                     setCursorIndex(cursorIndex + text.length);
+                }).catch(err => {
+                    // Prevents the crash if clipboard is empty or lacks permissions
+                    console.warn("Clipboard read failed:", err);
                 });
                 return;
             }
@@ -467,8 +468,6 @@ export default function Terminal() {
             pushOutput("command", `${currentPath}> ${raw}`);
         }
 
-
-
         if (!raw) {
             setInputBuffer("")
             setCursorIndex(0)
@@ -482,16 +481,22 @@ export default function Terminal() {
         const key = cmd.toLowerCase()
 
         let handler = commandRegistry[key]
+        let executionDelay = 1200
 
         if (!handler) {
             const suggestion = getClosestCommand(key)
             if (suggestion) {
-                pushOutput("info", `Auto-correct applied: ${key} -> ${suggestion}`)
+                const roast = getAutoCorrectRoast(suggestion)
+                setTimeout(() => (pushOutput("joke", roast)), 1000)
+                setTimeout(() => (pushOutput("info", `Auto-correct applied: ${key} -> ${suggestion}`)), 2000)
                 handler = commandRegistry[suggestion]
+                executionDelay = 4000
             }
         }
 
-        if (handler) handler(args.join(" "))
+        if (handler) {
+            setTimeout(() => handler(args.join(" ")), executionDelay)
+        }
         else pushOutput("error", `'${cmd}' is not recognized as an internal or external command.`)
 
         setInputBuffer("")
@@ -535,9 +540,6 @@ Type a command to begin.`
             );
         },
 
-
-
-
         dir: () => {
             const node = resolvePathObject(currentPath);
 
@@ -558,8 +560,6 @@ Type a command to begin.`
                 });
             }
         },
-
-
 
         cd: (arg) => {
             if (!arg) return;
@@ -582,7 +582,6 @@ Type a command to begin.`
             }
         },
 
-
         type: (arg) => {
             const node = resolvePathObject(currentPath);
 
@@ -592,7 +591,6 @@ Type a command to begin.`
                 pushOutput("error", "The system cannot find the file specified.");
             }
         },
-
 
         cls: () => {
             setFlashbangActive(true);
@@ -708,7 +706,6 @@ Type a command to begin.`
 
             pushOutput("error", "Invalid color value.");
         },
-
 
         calc: (expr) => {
             try {
@@ -832,12 +829,64 @@ Type a command to begin.`
 
 
         "/about": () =>
-            pushOutput("system", "Sahil OS — Interactive Resume Terminal"),
+            pushOutput(
+                "system",
+                `SAHIL SAWANT
+------------------
+Full Stack AI Developer
+
+Full Stack AI Engineer focused on building scalable, production-grade systems that combine intelligent automation with high-performance web architecture. Strong background in LLM integration, computer vision, SSR systems, and performance-optimized frontend platforms.
+
+CORE COMPETENCIES
+- AI Systems: LLMs, RAG, Multimodal (LLAVA), OCR, Model Training
+- Backend Architecture: Node.js, Express, Python, FastAPI, Microservices
+- Frontend Systems: React, React Native, Performance Optimization
+- DevOps: NGINX, Docker, CI/CD, Reverse Proxy, SSL Hardening
+- Data & Analytics: Dashboards, Google APIs, Real-time Visualization
+
+Design Philosophy:
+Build systems that scale horizontally, fail gracefully, and deliver measurable business impact.`
+            ),
 
         "/projects": () =>
             pushOutput(
                 "system",
-                "Projects:\n - E-commerce Platform\n - AI Platform"
+                `PROJECT PORTFOLIO
+------------------
+
+1) TGBS Website (https://tgbsmumbai.in)
+Engineered the official Thakur Global Business School website using SSR with Express.js.
+- Achieved ~90% faster initial load time through server-side rendering.
+- Built custom role-based CMS for non-technical content publishing.
+- Implemented SEO optimization, structured metadata, and performance tuning.
+- Deployed on NGINX with reverse proxy, SSL, and caching layer.
+
+Tech Stack: Node.js, Express.js, MySQL, NGINX, SSR, SEO
+
+2) Kirana Friends Platform (https://kiranafriends.com)
+Developed scalable retail-focused web platform.
+- Designed responsive UI optimized for small-business workflows.
+- Implemented backend APIs and database-driven architecture.
+- Focused on usability, performance, and production deployment stability.
+
+Tech Stack: React.js, Node.js, REST APIs, MySQL
+
+3) FitRealm – AI Fitness Platform (https://thefitrealm.in)
+AI-powered fitness intelligence system.
+- Built personalized workout generation using LLM + RAG architecture.
+- Integrated real-time AI fitness chatbot (Fit G) for coaching.
+- Designed analytics dashboards tracking body metrics and progression.
+- Achieved 95+ Lighthouse performance score with optimized caching & SEO.
+
+Tech Stack: React.js, Node.js, Python, LLMs, RAG, MySQL, NGINX
+
+4) AVI Core – Universal Media CLI
+Production-grade CLI for media processing and FFmpeg abstraction.
+- Designed hardened command architecture with validation and safe execution.
+- Implemented extensible plugin-style command registry.
+- Focused on reliability, cross-platform compatibility, and automation.
+
+Tech Stack: Python, CLI Architecture, Media Processing, DevOps`
             ),
 
         "/game": () => {
@@ -846,9 +895,108 @@ Type a command to begin.`
         },
 
 
-
-
     };
+
+    // Utilities
+
+    const AUTO_CORRECT_ROASTS = {
+        help: [
+            "You misspelled 'help'. I think you need an ambulance, not a terminal.",
+            "I’d send a rescue team for that spelling, but they'd never make it in time.",
+            "You screamed into the void, and the void corrected your grammar before answering."
+        ],
+        dir: [
+            "Looking for your dignity in these folders? Spoiler: It's not here.",
+            "I'll list the files, but I can't list a single excuse for that spelling.",
+            "Ah, 'dir'. Short for 'Dear god, please buy a typing tutor.'"
+        ],
+        cd: [
+            "Change Directory? More like Change Dictionary.",
+            "I teleported you to the folder, but left your typos behind in the trash.",
+            "Navigating the filesystem like a drunk Roomba. We got there, eventually."
+        ],
+        type: [
+            "The irony of misspelling the command that literally means 'type'.",
+            "I'm printing the file so you can see what actual words look like.",
+            "Reading files is fundamental. Shame we skipped the writing part in kindergarten."
+        ],
+        cls: [
+            "Wiping the screen. If only I could wipe my memory of that keystroke.",
+            "Screen cleared. We will never speak of your typo again. But I will remember.",
+            "Hiding the evidence? Smart. I scrubbed your spelling from the UI."
+        ],
+        ipconfig: [
+            "Pinging your router to see if the lag is in your network or your brain.",
+            "Here's your IP address. Please do not use it to look up 'how to spell'.",
+            "Networking is all about handshakes. Your fingers just tripped and fell."
+        ],
+        color: [
+            "Changing the terminal color to hide the red squiggly lines in your soul.",
+            "Let's paint over that disaster of a typo with some hex codes.",
+            "A fresh coat of paint won't fix your broken keyboard, but here you go."
+        ],
+        calc: [
+            "1 + 1 = 2. Your spelling = 0.",
+            "I calculated the probability of you typing that right on the first try. It was negative.",
+            "Let's stick to numbers, buddy. Letters clearly aren't your strong suit."
+        ],
+        weather: [
+            "Forecast: A heavy downpour of typos with a 100% chance of autocorrect.",
+            "It's partly cloudy outside, but the fog inside your brain is thick today.",
+            "Checking the radar to see where your spelling went wrong. It's a global disaster."
+        ],
+        joke: [
+            "The real joke was what you just typed into the prompt.",
+            "I was gonna tell a joke, but your spelling beat me to the punchline.",
+            "You want comedy? Look down at your hands. Now look back at the screen. Boom."
+        ],
+        loc: [
+            "Location tracked. Sending a search party for your missing vowels.",
+            "Coordinates acquired. Targeting a dictionary drop directly on your house.",
+            "Found you. Unfortunately, your typing skills are still missing in action."
+        ],
+        contact: [
+            "I seriously hope you don't type like that when emailing your boss.",
+            "Adding this to contacts. Note: Do not hire for data entry.",
+            "I'll connect you, but I'm warning them about your grammar first."
+        ],
+        webcam: [
+            "Turning on the camera so I can see the face of the person who just typed that.",
+            "Smile! Your terrible spelling is on candid camera.",
+            "Focusing the lens. Don't worry, it's much sharper than your typing."
+        ],
+        mic: [
+            "Switching to audio. Please, for the love of god, just speak.",
+            "Microphone on. I can literally hear your fingers mashing the wrong keys.",
+            "Good call. Let's rely on your vocal cords, because your hands are a liability."
+        ],
+        "screen-rec": [
+            "Recording started. This typo will be immortalized in MP4 format.",
+            "Capturing your screen. I'm submitting this keystroke to a fail compilation.",
+            "Rolling tape. Try not to embarrass yourself on the next line."
+        ],
+        speedtest: [
+            "Ping: 12ms. Download: 500Mbps. Typing speed: 3 WPM with 5 errors.",
+            "Testing your bandwidth. Too bad I can't test your brainwidth.",
+            "The internet is fast. Your fingers? Not so much. The accuracy? Tragic."
+        ],
+        typingtest: [
+            "Starting a typing test after *that* input is peak comedy.",
+            "Oh, you're brave requesting a typing test right now. Let's do this.",
+            "Entering diagnostic mode for your keyboard. Or maybe just your motor skills."
+        ],
+        matrix: [
+            "Neo dodged bullets. You can't even dodge typos.",
+            "Take the red pill to wake up. Take a dictionary to learn how to spell.",
+            "The Matrix is glitching, and it's entirely because of your finger placement."
+        ]
+    }
+
+    const getAutoCorrectRoast = (command) => {
+        const roasts = AUTO_CORRECT_ROASTS[command]
+        if (!roasts) return "Autocorrect executed. Precision optional."
+        return roasts[Math.floor(Math.random() * roasts.length)]
+    }
 
 
     useEffect(() => {
@@ -937,6 +1085,19 @@ help         :: Show all commands`
         }
     }, [outputBuffer])
 
+    useEffect(() => {
+        const input = mobileInputRef.current;
+        if (!input) return;
+
+        try {
+            input.value = inputBuffer;
+
+            const safeIndex = Math.max(0, Math.min(cursorIndex, inputBuffer.length));
+            input.setSelectionRange(safeIndex, safeIndex);
+        } catch {
+            // Silently fail (mobile browsers may restrict selection)
+        }
+    }, [inputBuffer, cursorIndex]);
 
 
 
@@ -948,15 +1109,22 @@ help         :: Show all commands`
             onClick={() => {
                 unlockAudio();
                 terminalRef.current.focus();
+                if (!gameActive && "ontouchstart" in window) {
+                    mobileInputRef.current?.focus({ preventScroll: true });
+                }
             }}
             onContextMenu={async (e) => {
                 e.preventDefault();
-                const text = await navigator.clipboard.readText();
-                const updated = inputBuffer.slice(0, cursorIndex) + text + inputBuffer.slice(cursorIndex);
-                setInputBuffer(updated);
-                setCursorIndex(cursorIndex + text.length);
+                try {
+                    const text = await navigator.clipboard.readText();
+                    const updated = inputBuffer.slice(0, cursorIndex) + text + inputBuffer.slice(cursorIndex);
+                    setInputBuffer(updated);
+                    setCursorIndex(cursorIndex + text.length);
+                } catch (err) {
+                    // Fails silently if clipboard is empty, denying permissions, or contains non-text
+                    console.warn("Clipboard read failed:", err);
+                }
             }}
-
             tabIndex={0}
         >
             {matrixMode && (
@@ -973,7 +1141,7 @@ help         :: Show all commands`
             )}
 
             {flashbangActive && <div className="flashbang" />}
-            <div className="terminal-tabs">
+            <div className="terminal-tabs" onClick={(e) => e.stopPropagation()}>
 
                 <div
                     className="terminal-tab active"
@@ -1015,14 +1183,15 @@ help         :: Show all commands`
                         {!mediaSession && (
                             <span className="prompt">{currentPath}&gt;</span>
                         )}
-                        {!mediaSession && (
-                            <span className="input-text">
 
+                        {!mediaSession && (
+                            <span className="input-text" >
                                 {inputBuffer.slice(0, cursorIndex)}
                                 <span className="cursor" />
                                 {inputBuffer.slice(cursorIndex)}
                             </span>
                         )}
+
                     </div>
                 )}
                 {gameActive && (
@@ -1042,15 +1211,42 @@ help         :: Show all commands`
                         </button>
                     </div>
                 )}
+                <input
+                    ref={mobileInputRef}
+                    value={inputBuffer}
+                    onChange={(e) => {
+                        const value = e.target.value;
 
+                        if (typeof value !== "string") return;
+
+                        setInputBuffer(value);
+                        setCursorIndex(value.length);
+                    }}
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    autoComplete="off"
+                    spellCheck={false}
+                    inputMode="text"
+                    style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        opacity: 0,
+                        pointerEvents: "none",
+                        height: 1,
+                        width: 1,
+                        zIndex: -1,
+                    }}
+                />
             </div>
 
             {modalFile && modalFile !== "GAME" && (
-                <div className="modal-backdrop">
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-backdrop" onClick={(e) => e.stopPropagation()}>
+
+                    <div className="modal-content" >
                         <iframe
                             title="pdf"
-                            src={`/assets/pdfs/${modalFile}`}
+                            src={`/assets/pdf/${modalFile}`}
                             frameBorder="0"
                         ></iframe>
                     </div>

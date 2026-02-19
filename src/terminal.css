@@ -33,7 +33,6 @@
   overflow-y: auto;
   scroll-behavior: smooth;
   position: relative;
-  z-index: 2;
   padding: 12px;
 }
 

@@ -8,14 +8,13 @@ import Terminal from "./terminal";
 import fitrealmImg from "./assets/projects/fitrealm.webp";
 import kiranaImg from "./assets/projects/kirana.webp";
 import tgbsImg from "./assets/projects/tgbs.webp";
+import avicoreImg from "./assets/projects/avicore.webp";
 
 import introVideo from './assets/video/intro.mp4';
 
 import object1 from "./assets/object-1.png";
 import object2 from "./assets/object-2.png";
 const object4 = object1;
-
-
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -37,6 +36,12 @@ const projectCards = [
     title: "TGBS Mumbai – Official Website",
     desc: "SSR Express.js website with CMS, brand UI, NGINX deployment, SSL, caching, and 90% faster load speed.",
     link: "https://tgbsmumbai.in"
+  },
+  {
+    img: avicoreImg,
+    title: "AVI Core - Universal Media CLI",
+    desc: "AVI Core is a command-line tool for processing and converting media files.",
+    link: "https://github.com/Sahil524/avicore"
   }
 ];
 
@@ -53,12 +58,6 @@ export default function App() {
       document.body.style.overflow = "auto";
     }
   }, [showIntro]);
-
-  // Smooth scroll helpers
-  const scrollToAbout = () => {
-    const about = document.querySelector(".about-section");
-    if (about) about.scrollIntoView({ behavior: "smooth" });
-  };
 
 
   const handleNavClick = (target) => {
@@ -484,11 +483,39 @@ export default function App() {
     return () => tl.kill();
   }, []);
 
+  // Contact Form
+
+  const [status, setStatus] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // This stops the redirect
+    const form = e.target;
+    const data = new FormData(form);
+
+    try {
+      const response = await fetch("https://formspree.io/f/xbdaaroz", {
+        method: "POST",
+        body: data,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        setStatus("THANKS");
+        form.reset(); // Clears the form fields
+      } else {
+        setStatus("ERROR");
+      }
+    } catch (error) {
+      setStatus("ERROR");
+    }
+  };
 
 
 
   return (
-    <div className="app-container" id="style-1">
+    <div className="app-container" id="style-1" >
       {showIntro && (
         <div
           className="intro-overlay"
@@ -550,7 +577,7 @@ export default function App() {
           <button
             className="scroll-btn"
             aria-label="Scroll to About"
-            onClick={scrollToAbout}
+            onClick={() => window.open('https://www.linkedin.com/in/sahilsawant182/', '_blank')}
           >
             <span className="arrow">→</span>
           </button>
@@ -587,7 +614,7 @@ export default function App() {
                     <h3>{p.title}</h3>
                     <p>{p.desc}</p>
                     <a className="project-btn" href={p.link} target="_blank" rel="noopener noreferrer">
-                      <span class="arrow">→</span>
+                      <span className="arrow">→</span>
                     </a>
                   </div>
                 ))}
@@ -672,14 +699,23 @@ export default function App() {
               </div>
 
 
-              <form action="https://formspree.io/f/mayvlvza" method="POST" className="contact-form">
-                <input type="text" name="name" placeholder="Your Name" required />
-                <input type="email" name="email" placeholder="Your Email" required />
-                <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
-                <button type="submit" className="submit-btn">
-                  <span className="arrow">→</span>
-                </button>
-              </form>
+
+              {status === "THANKS" ? (
+                <p>Thanks! Your message has been sent.</p>
+              ) : (
+                <form onSubmit={handleSubmit} className="contact-form">
+                  <input type="text" name="name" placeholder="Your Name" autoComplete="one-time-code" defaultValue="" required />
+                  <input type="email" name="email" placeholder="Your Email" autoComplete="one-time-code" defaultValue="" required />
+                  <textarea name="message" rows="5" placeholder="Your Message" defaultValue="" required></textarea>
+
+                  <button type="submit" className="submit-btn">
+                    <span className="arrow">→</span>
+                  </button>
+
+                  {status === "ERROR" && <p>Oops! There was a problem.</p>}
+                </form>
+              )}
+
 
             </div>
 

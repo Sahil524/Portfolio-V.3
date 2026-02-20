@@ -685,16 +685,16 @@ export default function App() {
             <div className="contact-container">
               <div className="contact-links">
                 <a href="tel:+919082056583" className="contact-link">
-                  <img src="/assets/icons/phone.webp" alt="Phone Icon" />
+                  <img src="./assets/icons/phone.webp" alt="Phone Icon" />
                 </a>
                 <a href="mailto:sahilsawant182@gmail.com" className="contact-link">
-                  <img src="/assets/icons/mail.webp" alt="Email Icon" />
+                  <img src="./assets/icons/mail.webp" alt="Email Icon" />
                 </a>
                 <a href="https://www.linkedin.com/in/sahilsawant182/" target="_blank" rel="noopener noreferrer" className="contact-link">
-                  <img src="/assets/icons/linkedin.webp" alt="LinkedIn Icon" />
+                  <img src="./assets/icons/linkedin.webp" alt="LinkedIn Icon" />
                 </a>
                 <a href="https://www.instagram.com/just.sahil_/" target="_blank" rel="noopener noreferrer" className="contact-link">
-                  <img src="/assets/icons/insta.webp" alt="Instagram Icon" />
+                  <img src="./assets/icons/insta.webp" alt="Instagram Icon" />
                 </a>
               </div>
 

@@ -6,10 +6,9 @@ const VFS = {
     "C:": {
         Users: {
             Guest: {
-                resume: { files: ["resume.pdf"] },
-                projects: { files: ["ecommerce.pdf", "ai_platform.pdf"] },
-                experience: { files: ["work_history.pdf"] },
-                skills: { files: ["technical_stack.pdf"] }
+                resume: { files: ["Resume.pdf"] },
+                projects: { files: ["Fit-Realm.pdf", "Kirana-Friends-Website.pdf", "TGBS-Website.pdf", "AVI-Core.pdf"] },
+                experience: { files: ["TRRAIN-Circle.pdf", "Grain-Analytics.pdf", "Thakur-Education-Group.pdf"] }
             }
         }
     }
@@ -33,7 +32,6 @@ const COLOR_MAP = {
 };
 
 
-
 const emailAddress = "sahilsawant182@gmail.com";
 
 export default function Terminal() {
@@ -47,8 +45,6 @@ export default function Terminal() {
     const [modalFile, setModalFile] = useState(null);
     const [matrixMode, setMatrixMode] = useState(false);
     const [terminalColor, setTerminalColor] = useState("#fca311");
-
-
     const terminalRef = useRef(null);
     const matrixRef = useRef(null);
 
@@ -144,7 +140,6 @@ export default function Terminal() {
 
         return score <= 2 ? best : null
     }
-
     const startRecording = async (mode) => {
         terminalRef.current?.focus();
 
@@ -292,6 +287,27 @@ export default function Terminal() {
         }, 300);
     };
 
+    const navigateHistory = (dir) => {
+        if (!commandHistory.length) return;
+
+        let next = historyPointer + dir;
+
+        if (next < -1) next = -1;
+        if (next >= commandHistory.length) next = commandHistory.length - 1;
+
+        setHistoryPointer(next);
+
+        if (next === -1) {
+            setInputBuffer("");
+            setCursorIndex(0);
+            return;
+        }
+
+        const cmd = commandHistory[commandHistory.length - 1 - next];
+        setInputBuffer(cmd);
+        setCursorIndex(cmd.length);
+    };
+
 
     useEffect(() => {
         setOutputBuffer(
@@ -303,7 +319,8 @@ export default function Terminal() {
         const handler = (e) => {
             unlockAudio();
 
-            if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End"].includes(e.key)) {
+            if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End"].includes(e.key) ||
+                e.code === "Space") {
                 e.preventDefault();
             }
 
@@ -419,27 +436,6 @@ export default function Terminal() {
         return () => window.removeEventListener("keydown", handler);
     }, [inputBuffer, cursorIndex, historyPointer, commandHistory, modalFile]);
 
-    const navigateHistory = (dir) => {
-        if (!commandHistory.length) return;
-
-        let next = historyPointer + dir;
-
-        if (next < -1) next = -1;
-        if (next >= commandHistory.length) next = commandHistory.length - 1;
-
-        setHistoryPointer(next);
-
-        if (next === -1) {
-            setInputBuffer("");
-            setCursorIndex(0);
-            return;
-        }
-
-        const cmd = commandHistory[commandHistory.length - 1 - next];
-        setInputBuffer(cmd);
-        setCursorIndex(cmd.length);
-    };
-
     const autocomplete = () => {
         const parts = inputBuffer.trim().split(" ");
         const last = parts[parts.length - 1].toLowerCase();
@@ -517,8 +513,17 @@ cls          : Clear the terminal
 ipconfig     : Display your network connection details
 type <file>  : Open file
 
+[ INFORMATION ]
+/about       : Displays information about Sahil
+/projects    : Display a list of his projects and their descriptions
+/resume      : Downloads Updated Resume
+/github      : Opens GitHub profile
+/linkedin    : Opens LinkedIn profile
+contact     : Displays contact information
+
+
 [ AI AGENTS ]
-/ask <query> : General Q&A with the base AI
+/ask <query> : General Q&A with the base AI model
 
 [ TOOLS & EXTRAS ]
 contact      : Open contact methods
@@ -709,9 +714,95 @@ Type a command to begin.`
 
         calc: (expr) => {
             try {
-                if (!/^[0-9+\-*/(). ]+$/.test(expr)) throw new Error();
-                const res = Function(`"use strict";return (${expr})`)();
-                pushOutput("info", `Result: ${res}`);
+                if (!expr || typeof expr !== "string") {
+                    pushOutput("error", "Invalid expression.");
+                    return;
+                }
+
+                const sanitized = expr.replace(/\s+/g, "");
+
+                if (!/^[0-9+\-*/().]+$/.test(sanitized)) {
+                    pushOutput("error", "Invalid characters detected.");
+                    return;
+                }
+
+                const tokens = sanitized.match(/(\d+(\.\d+)?)|[+\-*/()]/g);
+                if (!tokens) {
+                    pushOutput("error", "Malformed expression.");
+                    return;
+                }
+
+                const precedence = { "+": 1, "-": 1, "*": 2, "/": 2 };
+                const output = [];
+                const operators = [];
+
+                tokens.forEach((token) => {
+                    if (!isNaN(token)) {
+                        output.push(parseFloat(token));
+                    } else if ("+-*/".includes(token)) {
+                        while (
+                            operators.length &&
+                            "+-*/".includes(operators[operators.length - 1]) &&
+                            precedence[operators[operators.length - 1]] >= precedence[token]
+                        ) {
+                            output.push(operators.pop());
+                        }
+                        operators.push(token);
+                    } else if (token === "(") {
+                        operators.push(token);
+                    } else if (token === ")") {
+                        while (operators.length && operators[operators.length - 1] !== "(") {
+                            output.push(operators.pop());
+                        }
+                        if (operators.pop() !== "(") {
+                            throw new Error("Mismatched parentheses");
+                        }
+                    }
+                });
+
+                while (operators.length) {
+                    const op = operators.pop();
+                    if (op === "(" || op === ")") {
+                        throw new Error("Mismatched parentheses");
+                    }
+                    output.push(op);
+                }
+
+                const stack = [];
+
+                output.forEach((token) => {
+                    if (typeof token === "number") {
+                        stack.push(token);
+                    } else {
+                        const b = stack.pop();
+                        const a = stack.pop();
+
+                        if (typeof a !== "number" || typeof b !== "number") {
+                            throw new Error("Malformed expression");
+                        }
+
+                        let result;
+                        switch (token) {
+                            case "+": result = a + b; break;
+                            case "-": result = a - b; break;
+                            case "*": result = a * b; break;
+                            case "/":
+                                if (b === 0) throw new Error("Division by zero");
+                                result = a / b;
+                                break;
+                            default:
+                                throw new Error("Invalid operator");
+                        }
+
+                        stack.push(result);
+                    }
+                });
+
+                if (stack.length !== 1 || !Number.isFinite(stack[0])) {
+                    throw new Error("Evaluation failure");
+                }
+
+                pushOutput("info", `Result: ${stack[0]}`);
             } catch {
                 pushOutput("error", "Invalid expression.");
             }
@@ -831,9 +922,18 @@ Type a command to begin.`
         "/about": () =>
             pushOutput(
                 "system",
-                `SAHIL SAWANT
-------------------
-Full Stack AI Developer
+                `
+
+   ███████╗ █████╗ ██╗  ██╗██╗██╗         ███████╗ █████╗ ██╗    ██╗ █████╗ ███╗   ██╗████████╗
+   ██╔════╝██╔══██╗██║  ██║██║██║         ██╔════╝██╔══██╗██║    ██║██╔══██╗████╗  ██║╚══██╔══╝
+   ███████╗███████║███████║██║██║         ███████╗███████║██║ █╗ ██║███████║██╔██╗ ██║   ██║   
+   ╚════██║██╔══██║██╔══██║██║██║         ╚════██║██╔══██║██║███╗██║██╔══██║██║╚██╗██║   ██║   
+   ███████║██║  ██║██║  ██║██║███████╗    ███████║██║  ██║╚███╔███╔╝██║  ██║██║ ╚████║   ██║   
+   ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚══════╝    ╚══════╝╚═╝  ╚═╝ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝   
+
+---------------------------------------------------------------------------------------------------
+
+Full Stack AI Developer & AI Systems Architect
 
 Full Stack AI Engineer focused on building scalable, production-grade systems that combine intelligent automation with high-performance web architecture. Strong background in LLM integration, computer vision, SSR systems, and performance-optimized frontend platforms.
 
@@ -845,13 +945,15 @@ CORE COMPETENCIES
 - Data & Analytics: Dashboards, Google APIs, Real-time Visualization
 
 Design Philosophy:
-Build systems that scale horizontally, fail gracefully, and deliver measurable business impact.`
+Build systems that scale horizontally, fail gracefully, and deliver measurable business impact.
+
+---------------------------------------------------------------------------------------------------`
             ),
 
         "/projects": () =>
             pushOutput(
                 "system",
-                `PROJECT PORTFOLIO
+                `Sahils Projects
 ------------------
 
 1) TGBS Website (https://tgbsmumbai.in)
@@ -863,6 +965,8 @@ Engineered the official Thakur Global Business School website using SSR with Exp
 
 Tech Stack: Node.js, Express.js, MySQL, NGINX, SSR, SEO
 
+------------------
+
 2) Kirana Friends Platform (https://kiranafriends.com)
 Developed scalable retail-focused web platform.
 - Designed responsive UI optimized for small-business workflows.
@@ -870,6 +974,8 @@ Developed scalable retail-focused web platform.
 - Focused on usability, performance, and production deployment stability.
 
 Tech Stack: React.js, Node.js, REST APIs, MySQL
+
+------------------
 
 3) FitRealm – AI Fitness Platform (https://thefitrealm.in)
 AI-powered fitness intelligence system.
@@ -880,18 +986,60 @@ AI-powered fitness intelligence system.
 
 Tech Stack: React.js, Node.js, Python, LLMs, RAG, MySQL, NGINX
 
+------------------
+
 4) AVI Core – Universal Media CLI
 Production-grade CLI for media processing and FFmpeg abstraction.
 - Designed hardened command architecture with validation and safe execution.
 - Implemented extensible plugin-style command registry.
 - Focused on reliability, cross-platform compatibility, and automation.
 
-Tech Stack: Python, CLI Architecture, Media Processing, DevOps`
+Tech Stack: Python, CLI Architecture, Media Processing, DevOps
+
+------------------
+`
+
             ),
 
         "/game": () => {
             pushOutput("system", "Launching Game Container...");
             setGameActive(true);
+        },
+
+        "/resume": () => {
+            try {
+                const link = document.createElement("a");
+                link.href = "/assets/pdf/Resume.pdf"; // ensure file exists in /public
+                link.download = "Sahil_Sawant_Resume.pdf";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                pushOutput("system", "Resume download initiated.");
+            } catch {
+                pushOutput("error", "Resume download failed.");
+            }
+        },
+
+        "/github": () => {
+            try {
+                const url = "https://github.com/Sahil524";
+                window.open(url, "_blank", "noopener,noreferrer");
+                pushOutput("system", "https://github.com/Sahil524");
+                pushOutput("system", "Opening GitHub profile...");
+            } catch {
+                pushOutput("error", "Unable to open GitHub.");
+            }
+        },
+
+        "/linkedin": () => {
+            try {
+                const url = "https://linkedin.com/in/sahilsawant182";
+                window.open(url, "_blank", "noopener,noreferrer");
+                pushOutput("system", "https://linkedin.com/in/sahilsawant182");
+                pushOutput("system", "Opening LinkedIn profile...");
+            } catch {
+                pushOutput("error", "Unable to open LinkedIn.");
+            }
         },
 
 
@@ -1099,6 +1247,24 @@ help         :: Show all commands`
         }
     }, [inputBuffer, cursorIndex]);
 
+    const enterFullscreen = () => {
+        try {
+            const iframe = document.querySelector('.game-wrapper iframe');
+            if (!iframe) return;
+
+            const request =
+                iframe.requestFullscreen ||
+                iframe.webkitRequestFullscreen ||
+                iframe.msRequestFullscreen;
+
+            if (typeof request === "function") {
+                request.call(iframe);
+            }
+        } catch (err) {
+            console.error("Fullscreen request failed:", err);
+        }
+    };
+
 
 
     return (
@@ -1202,7 +1368,15 @@ help         :: Show all commands`
                             frameBorder="0"
                             loading="lazy"
                             title="embedded-game"
+                            allow="fullscreen"
+                            allowFullScreen
                         />
+                        <button
+                            className="game-close-btn1"
+                            onClick={() => enterFullscreen()}
+                        >
+                            ⛶
+                        </button>
                         <button
                             className="game-close-btn"
                             onClick={() => setGameActive(false)}
@@ -1241,14 +1415,15 @@ help         :: Show all commands`
             </div>
 
             {modalFile && modalFile !== "GAME" && (
-                <div className="modal-backdrop" onClick={(e) => e.stopPropagation()}>
-
+                <div className="modal-backdrop" onClick={(e) => setModalFile(null)}>
+                    <button
+                        className="game-close-btn"
+                        onClick={() => setModalFile(null)}
+                    >
+                        ✕
+                    </button>
                     <div className="modal-content" >
-                        <iframe
-                            title="pdf"
-                            src={`/assets/pdf/${modalFile}`}
-                            frameBorder="0"
-                        ></iframe>
+                        <img src={`/assets/img/${modalFile.replace(/\.pdf$/i, ".webp")}`} alt={modalFile} className="modal-img" />
                     </div>
                 </div>
             )}

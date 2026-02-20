@@ -1,0 +1,22 @@
+{
+  "name": "Sahil Sawant | Full Stack AI Developer Portfolio",
+  "short_name": "Sahil AI Dev",
+  "description": "Portfolio of Sahil Sawant, Full Stack AI Developer specializing in AI systems, scalable React and Node.js applications, LLM integration, RAG architecture, and performance-optimized web platforms.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "categories": ["technology", "developer", "portfolio"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/icon.webp",
+      "type": "image/webp",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}

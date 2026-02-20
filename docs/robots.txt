@@ -1,0 +1,6 @@
+# robots.txt for https://sahilsawant.42web.io/
+
+User-agent: *
+Allow: /
+
+Sitemap: https://sahilsawant.42web.io/sitemap.xml

@@ -1,7 +1,7 @@
 # 🚀 Sahil Sawant — AI Systems Portfolio (v3)
 
-> Production-grade interactive portfolio engineered as a terminal-driven AI operating environment.  
-> **Live Deployment:** https://sahil524.github.io/Portfolio-V.3/
+> **Canonical Website:** https://sahilsawant.dev/  
+> **Deployment (Portfolio V3):** https://sahil524.github.io/Portfolio-V.3/
 
 
 ## 📌 Executive Overview
@@ -119,6 +119,8 @@ This portfolio is engineered to:
 ---
 
 ## 🧑‍💻 Author
-
-**Sahil Sawant**
-Full Stack AI Developer
+ 
+- **Sahil Sawant** — Full Stack AI Developer & AI Systems Architect
+- **Website:** https://sahilsawant.dev/
+- **LinkedIn:** https://www.linkedin.com/in/sahilsawant182/
+- **GitHub:** https://github.com/Sahil524

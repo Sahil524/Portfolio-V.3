@@ -1,0 +1,61 @@
+# Enable Rewrite Engine
+RewriteEngine On
+
+<IfModule mod_deflate.c>
+  # Enable Gzip Compression
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript font/ttf font/woff font/woff2
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Enable Keep-Alive
+  Header set Connection keep-alive
+</IfModule>
+
+# Redirect HTTP to HTTPS
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:CF-Visitor} !{"scheme":"https"}
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ----------------------------------------------------------------------
+# Aggressive Cache-Control Strategy for Performance (AEO & GEO optimized)
+# ----------------------------------------------------------------------
+<IfModule mod_headers.c>
+  # 1. FOR STATIC ASSETS: Cache aggressively for 1 year & strip cookies (Improves Lighthouse cache TTL)
+  <FilesMatch "\.(js|css|jpg|jpeg|png|gif|webp|ico|ttf|woff2?|mp4)$">
+      Header set Cache-Control "public, max-age=31536000, immutable"
+      Header always unset Set-Cookie
+      Header always unset Cookie
+      Header always unset Pragma
+      Header always unset X-Powered-By
+  </FilesMatch>
+
+  # 2. FOR HTML & DATA: Never cache so users receive website updates instantly
+  <FilesMatch "\.(html|htm|txt|xml|json)$">
+      Header set Cache-Control "private, no-cache, no-store, must-revalidate"
+      Header set Pragma "no-cache"
+      Header set Expires "0"
+      Header always unset X-Powered-By
+  </FilesMatch>
+</IfModule>
+
+# SPA Fallback for React Router
+RewriteCond %{REQUEST_URI} !^/chat\.webp$
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /index.html [L]
+
+# Force HTTPS for all requests
+Header always set Content-Security-Policy "upgrade-insecure-requests;"
+
+# Allow access to image files and directories
+<FilesMatch "\.(jpg|jpeg|png|gif|webp)$">
+    Require all granted
+    Header set Access-Control-Allow-Origin "*"
+</FilesMatch>
+
+# Disable hotlink protection
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !^https://sahilsawant\.dev/ [NC]
+RewriteCond %{HTTP_REFERER} !^https://www\.sahilsawant\.dev/ [NC]
+RewriteRule \.(jpg|jpeg|png|gif|webp)$ - [L,NC]

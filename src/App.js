@@ -12,36 +12,36 @@ import avicoreImg from "./assets/projects/avicore.webp";
 
 import introVideo from './assets/video/intro.mp4';
 
-import object1 from "./assets/object-1.png";
-import object2 from "./assets/object-2.png";
+import object1 from "./assets/object-1.webp";
+import object2 from "./assets/object-2.webp";
 const object4 = object1;
 
 gsap.registerPlugin(ScrollTrigger);
 
 const projectCards = [
   {
-    img: fitrealmImg,   // import these at the top of file
+    img: fitrealmImg,
     title: "FitRealm – AI Fitness Platform",
-    desc: "AI-powered fitness platform with personalized workout plans, RAG-powered coaching, dashboards, and FitG real-time chatbot.",
-    link: "https://thefitrealm.in"
+    desc: "AI-powered fitness intelligence platform with personalized workout plans, RAG-powered coaching, dashboards, and FitG real-time assistant.",
+    link: "https://thefitrealm.in/"
   },
   {
     img: kiranaImg,
-    title: "Kirana Friends – AI Retail Assistant",
-    desc: "Mobile + web platform with GPT-4 powered chatbot, OCR modules, ML models, and intelligent shelf analytics.",
-    link: "https://kiranafriends.com"
+    title: "Kirana Friends",
+    desc: "Web platform designed around workflows for small merchants, built with React, Node.js, REST APIs, and MySQL.",
+    link: "https://kiranafriends.com/"
   },
   {
     img: tgbsImg,
     title: "TGBS Mumbai – Official Website",
-    desc: "SSR Express.js website with CMS, brand UI, NGINX deployment, SSL, caching, and 90% faster load speed.",
-    link: "https://tgbsmumbai.in"
+    desc: "High-performance SSR web platform developed for Thakur Educational Group using Express.js, CMS, and NGINX.",
+    link: "https://tgbsmumbai.in/"
   },
   {
     img: avicoreImg,
-    title: "AVI Core - Universal Media CLI",
-    desc: "AVI Core is a command-line tool for processing and converting media files.",
-    link: "https://github.com/Sahil524/avicore"
+    title: "AVI Core – Windows Media Toolkit",
+    desc: "Open-source Windows media toolkit for converting, compressing, and processing image, video, and audio files.",
+    link: "https://sahil524.github.io/AVI-Core/"
   }
 ];
 
@@ -88,8 +88,8 @@ export default function App() {
 
 
   // --- GSAP ANIMATIONS ---
-  const { ref: heroRef, inView: heroInView } = useInView({ triggerOnce: true });
-  const { ref: aboutRef, inView: aboutInView } = useInView({ threshold: 0.2 });
+  const { ref: heroRef } = useInView({ triggerOnce: true });
+  const { ref: aboutRef } = useInView({ threshold: 0.2 });
 
 
   // Mouse parallax for objects
@@ -551,14 +551,14 @@ export default function App() {
       )}
       <div className="overlay-bg">
         <section className="hero-section" ref={heroRef}>
-          <img className="object object-1" src={object1} alt="floating object 1" />
-          <img className="object object-2" src={object2} alt="floating object 2" />
+          <img className="object object-1" src={object1} alt="" aria-hidden="true" fetchPriority="high" loading="eager" />
+          <img className="object object-2" src={object2} alt="" aria-hidden="true" fetchPriority="high" loading="eager" />
 
           <nav className="navbar" aria-label="Main navigation">
-            <a onClick={() => handleNavClick("About")}>About</a>
-            <a onClick={() => handleNavClick("Tech Stack")}>Tech Stack</a>
-            <a onClick={() => handleNavClick("Projects")}>Projects</a>
-            <a onClick={() => handleNavClick("Contact")}>Contact</a>
+            <a href="#about" onClick={(e) => { e.preventDefault(); handleNavClick("About"); }}>About</a>
+            <a href="#tech-stack" onClick={(e) => { e.preventDefault(); handleNavClick("Tech Stack"); }}>Tech Stack</a>
+            <a href="#projects" onClick={(e) => { e.preventDefault(); handleNavClick("Projects"); }}>Projects</a>
+            <a href="#contact" onClick={(e) => { e.preventDefault(); handleNavClick("Contact"); }}>Contact</a>
           </nav>
 
 
@@ -566,7 +566,7 @@ export default function App() {
             <h1>
               Hi, I'm <span>Sahil</span>
             </h1>
-            <p className="tagline">Full Stack AI Developer</p>
+            <p className="tagline">Full Stack AI Developer &amp; AI Systems Architect</p>
           </div>
 
 
@@ -576,30 +576,30 @@ export default function App() {
 
           <button
             className="scroll-btn"
-            aria-label="Scroll to About"
+            aria-label="Connect on LinkedIn"
             onClick={() => window.open('https://www.linkedin.com/in/sahilsawant182/', '_blank')}
           >
             <span className="arrow">→</span>
           </button>
         </section>
 
-        <section className="about-section" ref={aboutRef}>
-          <img className="object object-4" src={object4} alt="floating object 4" />
+        <section id="about" className="about-section" ref={aboutRef}>
+          <img className="object object-4" src={object4} alt="" aria-hidden="true" />
 
 
           <div className="about-content">
             <h2>Who am I?</h2>
             <p>
-              I'm Sahil, a Full-Stack AI engineer who builds fast, intuitive, and
-              intelligent digital experiences. I don't write code for the sake of
-              code. I write systems that think. Websites that respond. Apps that
-              guide. Dashboards that tell stories.
+              I'm Sahil Sawant, a Full Stack AI Developer and AI Systems Architect based in
+              Mumbai, India. I build fast, intuitive, and intelligent digital experiences.
+              I design systems that think, websites that respond, and dashboards that deliver
+              actionable insights.
             </p>
           </div>
         </section>
       </div>
 
-      <section className="projects-section" ref={projectsRef}>
+      <section id="projects" className="projects-section" ref={projectsRef}>
         <div className="projects-container">
           <div className="projects-content">
             <div className="projects-header">
@@ -609,14 +609,14 @@ export default function App() {
             <div className="projects-carousel-container">
               <div className="projects-carousel" ref={carouselRef} >
                 {projectCards.map((p, index) => (
-                  <div className="project-card" key={index}>
-                    <img src={p.img} alt={p.title} className="project-img" />
+                  <article className="project-card" key={index}>
+                    <img src={p.img} alt={`${p.title} preview`} className="project-img" />
                     <h3>{p.title}</h3>
                     <p>{p.desc}</p>
-                    <a className="project-btn" href={p.link} target="_blank" rel="noopener noreferrer">
+                    <a className="project-btn" href={p.link} target="_blank" rel="noopener noreferrer" aria-label={`View ${p.title}`}>
                       <span className="arrow">→</span>
                     </a>
-                  </div>
+                  </article>
                 ))}
               </div>
             </div>
@@ -626,7 +626,7 @@ export default function App() {
 
       </section>
 
-      <section className="techstack-section">
+      <section id="tech-stack" className="techstack-section">
         <div className="techstack-wrapper" ref={techStackRef}>
           <div className="techstack-layout">
             {/* Left Side: Vertical Title */}
@@ -670,13 +670,13 @@ export default function App() {
         <Terminal />
       </section>
 
-      <section className="contact-section" ref={contactRef}>
+      <section id="contact" className="contact-section" ref={contactRef}>
         <div className="contact-wrapper">
           <div className="contact-title-col">
             <h2 className="vertical-text">Contact Me</h2>
           </div>
           <div className="contact-content">
-            <h2>Let's Connect!</h2>
+            <h3>Let's Connect!</h3>
             <p>
               I'm always open to discussing new projects, creative ideas, or
               opportunities to be part of your visions. Feel free to reach out!
@@ -684,17 +684,17 @@ export default function App() {
             <hr className="contact-divider" />
             <div className="contact-container">
               <div className="contact-links">
-                <a href="tel:+919082056583" className="contact-link">
-                  <img src="./assets/icons/phone.webp" alt="Phone Icon" />
+                <a href="tel:+919082056583" className="contact-link" aria-label="Call Sahil Sawant">
+                  <img src="./assets/icons/phone.webp" alt="Phone" />
                 </a>
-                <a href="mailto:sahilsawant182@gmail.com" className="contact-link">
-                  <img src="./assets/icons/mail.webp" alt="Email Icon" />
+                <a href="mailto:sahilsawant182@gmail.com" className="contact-link" aria-label="Email Sahil Sawant">
+                  <img src="./assets/icons/mail.webp" alt="Email" />
                 </a>
-                <a href="https://www.linkedin.com/in/sahilsawant182/" target="_blank" rel="noopener noreferrer" className="contact-link">
-                  <img src="./assets/icons/linkedin.webp" alt="LinkedIn Icon" />
+                <a href="https://www.linkedin.com/in/sahilsawant182/" target="_blank" rel="noopener noreferrer" className="contact-link" aria-label="Sahil Sawant LinkedIn profile">
+                  <img src="./assets/icons/linkedin.webp" alt="LinkedIn" />
                 </a>
-                <a href="https://www.instagram.com/just.sahil_/" target="_blank" rel="noopener noreferrer" className="contact-link">
-                  <img src="./assets/icons/insta.webp" alt="Instagram Icon" />
+                <a href="https://www.instagram.com/just.sahil_/" target="_blank" rel="noopener noreferrer" className="contact-link" aria-label="Sahil Sawant Instagram profile">
+                  <img src="./assets/icons/insta.webp" alt="Instagram" />
                 </a>
               </div>
 
@@ -704,11 +704,11 @@ export default function App() {
                 <p>Thanks! Your message has been sent.</p>
               ) : (
                 <form onSubmit={handleSubmit} className="contact-form">
-                  <input type="text" name="name" placeholder="Your Name" autoComplete="one-time-code" defaultValue="" required />
-                  <input type="email" name="email" placeholder="Your Email" autoComplete="one-time-code" defaultValue="" required />
+                  <input type="text" name="name" placeholder="Your Name" autoComplete="name" defaultValue="" required />
+                  <input type="email" name="email" placeholder="Your Email" autoComplete="email" defaultValue="" required />
                   <textarea name="message" rows="5" placeholder="Your Message" defaultValue="" required></textarea>
 
-                  <button type="submit" className="submit-btn">
+                  <button type="submit" className="submit-btn" aria-label="Send message">
                     <span className="arrow">→</span>
                   </button>
 

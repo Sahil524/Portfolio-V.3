@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/static/css/main.0d16a47f.css",
+    "main.js": "/static/js/main.ae40987e.js",
+    "static/js/453.a7d99afe.chunk.js": "/static/js/453.a7d99afe.chunk.js",
+    "static/media/intro.mp4": "/static/media/intro.ddabb7f1816e601fa7f7.mp4",
+    "static/media/tgbs.webp": "/static/media/tgbs.e537a2f698f8a224bb0e.webp",
+    "static/media/tomorrow.ttf": "/static/media/tomorrow.2542f093e1f1d0812d57.ttf",
+    "static/media/fitrealm.webp": "/static/media/fitrealm.7e144d7da2783aa1acad.webp",
+    "static/media/kirana.webp": "/static/media/kirana.c18f329c48f1675466fe.webp",
+    "static/media/object-1.webp": "/static/media/object-1.06d91ee22628850a80c8.webp",
+    "static/media/object-2.webp": "/static/media/object-2.05839eb4f9b072ad15a6.webp",
+    "static/media/tomorrow.woff2": "/static/media/tomorrow.3bd23752fb704415f9d6.woff2",
+    "static/media/overlay.webp": "/static/media/overlay.6c31ec9ac30c3c58ce00.webp",
+    "index.html": "/index.html",
+    "static/media/avicore.webp": "/static/media/avicore.5596c12d10baf5723a11.webp",
+    "main.0d16a47f.css.map": "/static/css/main.0d16a47f.css.map",
+    "main.ae40987e.js.map": "/static/js/main.ae40987e.js.map",
+    "453.a7d99afe.chunk.js.map": "/static/js/453.a7d99afe.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0d16a47f.css",
+    "static/js/main.ae40987e.js"
+  ]
+}

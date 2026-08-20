@@ -1,0 +1,49 @@
+# Sahil Sawant
+
+> Sahil Sawant is a Full Stack AI Developer and AI Systems Architect based in Mumbai, India, specializing in scalable web platforms, computer vision, and LLM integration.
+
+**Identity & Contact**
+* Full Name: Sahil Sawant
+* Title: Full Stack AI Developer & AI Systems Architect
+* Location: Mumbai, Maharashtra, India
+* Email: sahilsawant182@gmail.com
+* Phone: +91 9082056583
+
+**Technical Stack**
+* AI & ML: Large Language Models (LLMs), Generative AI, Retrieval-Augmented Generation (RAG), Computer Vision, Object Detection, Image Classification, OCR, Multimodal AI (LLAVA), Model Training, NLP.
+* Frontend: React, React Native, JavaScript (ES6+), TypeScript, HTML5, CSS3, GSAP, Framer Motion.
+* Backend & APIs: Node.js, Express.js, Python, Flask, FastAPI, REST APIs, WebSockets, SSR, Microservices.
+* Databases & Cloud: MySQL, PostgreSQL, MongoDB, SQL, NGINX, Docker, CI/CD, Git, Linux.
+* Optimization: Web Performance Optimization, Technical SEO.
+
+**Professional Experience**
+* Full Stack Developer at Thakur Educational Group (Jan 2025 - Apr 2025): Engineered the official TGBS Mumbai website using SSR with Express.js. Developed a custom role-based CMS and hardened server infrastructure using NGINX.
+* Full Stack Developer at GRAIN Analytics (May 2024 - Jul 2024): Built an enterprise operations dashboard using React and Python. Integrated Google APIs and developed an LLM-powered assistant for labor scheduling queries.
+* AI/ML Intern at TRAAIN Circle Pvt. Ltd. (Dec 2023 - Apr 2024): Built "Mishraji", a GPT-4 conversational assistant. Trained CV models for retail analytics and implemented custom voice systems using Azure Cognitive Services.
+* Entrepreneurship: Currently building out the infrastructure and service offerings for ZeroShot Media, an upcoming digital marketing and web agency.
+
+**Education**
+* Thakur College of Engineering and Technology (2021 - 2024): B.E. in Artificial Intelligence and Data Science.
+* Sathaye College (2019 - 2021): HSC in Science.
+
+## Profiles
+
+- [Canonical Website](https://sahilsawant.dev/): Sahil's official professional website.
+- [Canonical Person Entity](https://sahilsawant.dev/#person): Schema.org structured data entity.
+- [LinkedIn](https://www.linkedin.com/in/sahilsawant182/): Professional network profile and work history.
+- [GitHub](https://github.com/Sahil524): Source code repositories and AI deployments.
+- [Instagram](https://www.instagram.com/just.sahil_/): Personal and professional updates.
+
+## Projects
+
+- [FitRealm](https://thefitrealm.in/): AI-powered fitness intelligence platform featuring AI-generated workout programs and an interactive fitness assistant.
+- [AVI Core Source](https://github.com/Sahil524/AVI-Core): Open-source Windows media toolkit for compressing and processing image, video, and audio files.
+- [AVI Core Docs](https://avi-core.sourceforge.io/): Official documentation for the AVI Core toolkit.
+- [TGBS Mumbai](https://tgbsmumbai.in/): High-performance SSR web platform developed for Thakur Educational Group.
+- [Kirana Friends](https://kiranafriends.com/): Web platform designed around workflows for small merchants.
+
+## Optional
+
+- [Portfolio V3](https://sahil524.github.io/Portfolio-V.3/): Legacy portfolio iteration 3.
+- [Portfolio V2](https://sahil524.github.io/Portfolio-V.2/): Legacy portfolio iteration 2.
+- [Portfolio V1](https://sahil524.github.io/Portfolio-V.1/): Legacy portfolio iteration 1.

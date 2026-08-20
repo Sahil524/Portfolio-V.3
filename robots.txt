@@ -1,6 +1,6 @@
-# robots.txt for https://sahilsawant.42web.io/
+# robots.txt for https://sahilsawant.dev/
 
 User-agent: *
 Allow: /
 
-Sitemap: https://sahilsawant.42web.io/sitemap.xml
+Sitemap: https://sahilsawant.dev/sitemap.xml

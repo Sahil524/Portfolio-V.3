@@ -1,6 +1,6 @@
 # robots.txt for https://sahilsawant.dev/
 
 User-agent: *
-Disallow: /
+Allow: /
 
 Sitemap: https://sahilsawant.dev/sitemap.xml
